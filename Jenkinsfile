@@ -6,15 +6,28 @@ pipeline {
         NEXUS_CREDENTIALS_ID = 'NexusLogins'
         DOCKER_HUB_CREDENTIALS = 'dockerid'
         DOCKER_IMAGE = 'vishnusoman85/react-app'
-        DOCKER_TAG = '1.0.${BUILD_NUMBER}'
+        DOCKER_TAG = "1.0.${BUILD_NUMBER}"
     }
     stages {
         stage('Checkout Code') {
             steps {
-
-            	git credentialsId: 'githubpass', url: 'https://github.com/Beerus-cmd/docker-reactjs.git'
+                git credentialsId: 'githubpass', url: 'https://github.com/Beerus-cmd/docker-reactjs.git'
             }
         }
 
-   }
+        stage('Code Analysis with SonarQube') {
+            steps {
+                withSonarQubeEnv('SonarQubeServer') {
+                    sh 'npm install'
+                    sh 'npx sonar-scanner'
+                }
+            }
+        }
+
+        stage('Run Tests') {
+            steps {
+                sh 'npm test'
+            }
+        }
+    }
 }
