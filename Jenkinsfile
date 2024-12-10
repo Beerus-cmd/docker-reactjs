@@ -1,7 +1,7 @@
 pipeline {
     agent any
     environment {
-        SONARQUBE_SERVER = 'SonarQubeServer' // Jenkins SonarQube configuration
+        SONARQUBE_SERVER = 'sonarserver' // Jenkins SonarQube configuration
         NEXUS_URL = 'http://13.235.95.61:8081/'
         NEXUS_CREDENTIALS_ID = 'NexusLogins'
         DOCKER_HUB_CREDENTIALS = 'dockerid'
@@ -11,15 +11,17 @@ pipeline {
     stages {
         stage('Checkout Code') {
             steps {
-                git credentialsId: 'githubpass', url: 'https://github.com/Beerus-cmd/docker-reactjs.git'
+
+                git branch: 'master', credentialsId: 'githubpass', url: 'https://github.com/Beerus-cmd/docker-reactjs.git'
+        
             }
         }
 
         stage('Code Analysis with SonarQube') {
             steps {
-                withSonarQubeEnv('SonarQubeServer') {
+                withSonarQubeEnv('sonarserver') {
                     sh 'npm install'
-                    sh 'npx sonar-scanner'
+                    sh 'npx sonarscanner'
                 }
             }
         }
@@ -31,3 +33,4 @@ pipeline {
         }
     }
 }
+
