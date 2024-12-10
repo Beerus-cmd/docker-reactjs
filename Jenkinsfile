@@ -11,9 +11,10 @@ pipeline {
     stages {
         stage('Checkout Code') {
             steps {
-                git branch: 'main', url: 'https://github.com/Beerus-cmd/docker-reactjs.git'
+
+            	git credentialsId: 'githubpass', url: 'https://github.com/Beerus-cmd/docker-reactjs.git'
             }
         }
-    }
-}
 
+   }
+}
