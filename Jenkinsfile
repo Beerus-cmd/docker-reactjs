@@ -14,6 +14,6 @@ pipeline {
                 git branch: 'main', url: 'https://github.com/thejungwon/docker-reactjs.git'
             }
         }
-
-   }
+    }
+}
 
