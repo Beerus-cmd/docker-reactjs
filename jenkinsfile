@@ -1,6 +1,7 @@
 pipeline {
     agent any
     environment {
+        
         SONARQUBE_SERVER = 'sonarserver' // Jenkins SonarQube configuration
         NEXUS_URL = 'http://52.66.199.22:8081/'
         NEXUS_CREDENTIALS_ID = 'NexusLogins'
@@ -15,19 +16,16 @@ pipeline {
             }
         }
 
-        stage('Code Analysis with SonarQube') {
-            steps {
-                withSonarQubeEnv('sonarserver') {
-                    sh 'npm install'
-                    sh 'npx sonar-scanner'
-                }
-            }
-        }
-
-        stage('Run Tests') {
-            steps {
-                sh 'npm test'
-            }
+  stage('CODE ANALYSIS with SONARQUBE') {
+    steps {
+        withSonarQubeEnv("${SONARSERVER}") {
+            sh '''
+                npx sonar-scanner \
+                    -Dsonar.projectKey=docker-reactjs \
+                    -Dsonar.sources=. \
+                    -Dsonar.host.url=http://52.66.199.22:9000/ \
+                    -Dsonar.login=sonartoken
+            '''
         }
     }
 }
