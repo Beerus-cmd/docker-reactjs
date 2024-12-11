@@ -4,7 +4,7 @@ pipeline {
         SONARQUBE_SERVER = 'sonarserver'  // Jenkins SonarQube configuration
         NEXUS_URL = 'http://52.66.199.22:8085'  // Nexus repository URL with port 8085
         DOCKER_HUB_CREDENTIALS = 'dockerid'
-        DOCKER_IMAGE = 'vishnusoman85:react-app'
+        DOCKER_IMAGE = 'vishnusoman85/react-app'
         DOCKER_TAG = "1.0.${BUILD_NUMBER}"
         NEXUS_CREDENTIALS_ID = 'nexuslogin'  // Jenkins credentials ID for Nexus login
     }
