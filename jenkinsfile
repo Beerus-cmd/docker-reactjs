@@ -3,10 +3,11 @@ pipeline {
     environment {
         SONARQUBE_SERVER = 'sonarserver' // Jenkins SonarQube configuration
         NEXUS_URL = 'http://52.66.199.22:8081/'
-        NEXUS_CREDENTIALS_ID = 'NexusLogins'
         DOCKER_HUB_CREDENTIALS = 'dockerid'
         DOCKER_IMAGE = 'vishnusoman85/react-app'
         DOCKER_TAG = "1.0.${BUILD_NUMBER}"
+        NEXUS_LOGIN = 'nexuslogin'
+        NEXUSPASS = credentials('NexusLogin')
     }
     stages {
         stage('Checkout Code') {
@@ -42,14 +43,14 @@ pipeline {
         stage('Publish to Nexus') {
             steps {
                 script {
-                    withCredentials([usernamePassword(credentialsId: 'NexusLogins', 
+                    withCredentials([usernamePassword(credentialsId: 'nexuslogin', 
                         usernameVariable: 'NEXUS_USER', 
                         passwordVariable: 'NEXUS_PASS')]) {
                         // Docker login to Nexus registry
-                        sh "docker login -u ${NEXUS_USER} -p ${NEXUS_PASS} 52.66.199.22:8081"
-                        
+                        sh "docker login -u ${NEXUS_USER} -p ${NEXUS_PASS} ${NEXUS_URL}"
+
                         // Push the Docker image to Nexus repository
-                        sh "docker push 52.66.199.22:8081/repository/docker-hosted/${DOCKER_IMAGE}:${DOCKER_TAG}"
+                        sh "docker push ${NEXUS_URL}/repository/docker-hosted/${DOCKER_IMAGE}:${DOCKER_TAG}"
                     }
                 }
             }
