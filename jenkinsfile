@@ -25,7 +25,7 @@ pipeline {
             steps {
                 withSonarQubeEnv("${SONARQUBE_SERVER}") {
                     sh '''
-                    ${scannerHome}/bin/sonar-scanner -Dsonar.projectKey=docker-reactjs -Dsonar.sources=.
+                    npx -Dsonar.projectKey=docker-reactjs -Dsonar.sources=.
                     '''
                 }
             }
