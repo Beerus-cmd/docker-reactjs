@@ -19,9 +19,7 @@ pipeline {
             steps {
                 withSonarQubeEnv("${SONARQUBE_SERVER}") {
                     sh '''
-                        npx sonar-scanner \
-                            -Dsonar.projectKey=docker-reactjs \
-                            -Dsonar.sources=.
+				export PATH=\$PATH:/usr/local/bin && npx sonar-scanner -Dsonar.projectKey=docker-reactjs -Dsonar.sources=.
                     '''
                 }
             }
