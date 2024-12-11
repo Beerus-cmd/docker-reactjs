@@ -15,11 +15,17 @@ pipeline {
             }
         }
 
+        stage('Install Dependencies') {
+            steps {
+                sh 'npm install'
+            }
+        }
+
         stage('CODE ANALYSIS with SONARQUBE') {
             steps {
                 withSonarQubeEnv("${SONARQUBE_SERVER}") {
                     sh '''
-				export PATH=\$PATH:/usr/local/bin && npx sonar-scanner -Dsonar.projectKey=docker-reactjs -Dsonar.sources=.
+                    ${scannerHome}/bin/sonar-scanner -Dsonar.projectKey=docker-reactjs -Dsonar.sources=.
                     '''
                 }
             }
