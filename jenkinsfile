@@ -1,12 +1,12 @@
-pipeline {
+opipeline {
     agent any
     environment {
-        SONARQUBE_SERVER = 'sonarserver'  // Jenkins SonarQube configuration
-        NEXUS_URL = 'http://13.127.232.153:8085'  // Nexus URL
-        DOCKER_HUB_CREDENTIALS = 'dockerid'  // Docker Hub credentials
-        DOCKER_IMAGE = 'vishnusoman85/react-app'  // Docker image name
-        DOCKER_TAG = "1.0.${BUILD_NUMBER}"  // Docker image tag
-        NEXUS_CREDENTIALS_ID = 'nexuslogin'  // Jenkins credentials ID for Nexus login
+        SONARQUBE_SERVER = 'sonarserver' // Jenkins SonarQube configuration
+        NEXUS_URL = 'http://13.127.232.153:8085' // Nexus URL
+        DOCKER_HUB_CREDENTIALS = 'dockerid' // Docker Hub credentials
+        DOCKER_IMAGE = 'vishnusoman85/react-app' // Docker image name
+        DOCKER_TAG = "1.0.${BUILD_NUMBER}" // Docker image tag
+        NEXUS_CREDENTIALS_ID = 'nexuslogin' // Jenkins credentials ID for Nexus login
     }
     stages {
         stage('Checkout Code') {
@@ -14,23 +14,22 @@ pipeline {
                 git branch: 'master', credentialsId: 'githubpass', url: 'https://github.com/Beerus-cmd/docker-reactjs.git'
             }
         }
-
         stage('Install Dependencies') {
             steps {
                 sh 'npm install'
             }
         }
-
-        stage('CODE ANALYSIS with SONARQUBE') {
+        stage('Code Analysis with SonarQube') {
             steps {
                 withSonarQubeEnv("${SONARQUBE_SERVER}") {
                     sh '''
-                    npx -Dsonar.projectKey=docker-reactjs -Dsonar.sources=.
+                        npx sonar-scanner \
+                        -Dsonar.projectKey=docker-reactjs \
+                        -Dsonar.sources=.
                     '''
                 }
             }
         }
-
         stage('Build Docker Image') {
             steps {
                 script {
@@ -38,19 +37,15 @@ pipeline {
                 }
             }
         }
-
         stage('Push Docker Image to Nexus') {
             steps {
                 script {
-                    withCredentials([usernamePassword(credentialsId: NEXUS_CREDENTIALS_ID, 
-                                                      usernameVariable: 'NEXUS_USER', 
-                                                      passwordVariable: 'NEXUS_PASS')]) {
-                        // Securely login to Nexus without exposing the password
+                    withCredentials([usernamePassword(credentialsId: NEXUS_CREDENTIALS_ID, usernameVariable: 'NEXUS_USER', passwordVariable: 'NEXUS_PASS')]) {
                         sh """
                             #!/bin/bash
                             echo \$NEXUS_PASS | docker login -u \$NEXUS_USER --password-stdin ${NEXUS_URL}
-                            
-				docker push ${NEXUS_URL}/repository/docker-release/*
+                            docker tag ${DOCKER_IMAGE}:${DOCKER_TAG} ${NEXUS_URL}/repository/docker-release/${DOCKER_IMAGE}:${DOCKER_TAG}
+                            docker push ${NEXUS_URL}/repository/docker-release/${DOCKER_IMAGE}:${DOCKER_TAG}
                         """
                     }
                 }
