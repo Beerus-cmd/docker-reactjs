@@ -2,7 +2,7 @@ pipeline {
     agent any
     environment {
         SONARQUBE_SERVER = 'sonarserver'  // Jenkins SonarQube configuration
-        NEXUS_URL = 'http://52.66.199.22:8081'  // HTTP for Nexus
+        NEXUS_URL = 'http://52.66.199.22:8085/repository/docker-release/'  // Updated Nexus URL with port 8085
         DOCKER_HUB_CREDENTIALS = 'dockerid'
         DOCKER_IMAGE = 'vishnusoman85/react-app'
         DOCKER_TAG = "1.0.${BUILD_NUMBER}"
@@ -48,8 +48,8 @@ pipeline {
                         // Securely login to Nexus without exposing the password
                         sh '''#!/bin/bash
                             echo \$NEXUS_PASS | docker login -u \$NEXUS_USER --password-stdin ${NEXUS_URL}
-                            docker tag ${DOCKER_IMAGE}:${DOCKER_TAG} ${NEXUS_URL}/repository/docker/${DOCKER_IMAGE}:${DOCKER_TAG}
-                            docker push ${NEXUS_URL}/repository/docker/${DOCKER_IMAGE}:${DOCKER_TAG}
+                            docker tag ${DOCKER_IMAGE}:${DOCKER_TAG} ${NEXUS_URL}${DOCKER_IMAGE}:${DOCKER_TAG}
+                            docker push ${NEXUS_URL}${DOCKER_IMAGE}:${DOCKER_TAG}
                         '''
                     }
                 }
