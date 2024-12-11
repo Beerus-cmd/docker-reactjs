@@ -2,7 +2,7 @@ pipeline {
     agent any
     environment {
         SONARQUBE_SERVER = 'sonarserver'  // Jenkins SonarQube configuration
-        NEXUS_URL = 'http://http://13.127.232.153:8085'  // Nexus URL
+        NEXUS_URL = 'http://13.127.232.153:8085'  // Nexus URL
         DOCKER_HUB_CREDENTIALS = 'dockerid'  // Docker Hub credentials
         DOCKER_IMAGE = 'vishnusoman85/react-app'  // Docker image name
         DOCKER_TAG = "1.0.${BUILD_NUMBER}"  // Docker image tag
