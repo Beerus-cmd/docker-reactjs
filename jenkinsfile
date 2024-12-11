@@ -11,7 +11,7 @@ pipeline {
     stages {
         stage('Checkout Code') {
             steps {
-                   git branch: 'master', credentialsId: 'githubpass', url: 'https://github.com/Beerus-cmd/docker-reactjs.git'
+                git branch: 'master', credentialsId: 'githubpass', url: 'https://github.com/Beerus-cmd/docker-reactjs.git'
             }
         }
 
@@ -22,8 +22,15 @@ pipeline {
                         npx sonar-scanner \
                             -Dsonar.projectKey=docker-reactjs \
                             -Dsonar.sources=.
-                        
                     '''
+                }
+            }
+        }
+
+        stage('Build Docker Image') {
+            steps {
+                script {
+                    docker.build("${DOCKER_IMAGE}:${DOCKER_TAG}")
                 }
             }
         }
