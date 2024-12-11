@@ -47,9 +47,9 @@ pipeline {
                                                       passwordVariable: 'NEXUS_PASS')]) {
                         // Securely login to Nexus without exposing the password
                         sh '''#!/bin/bash
-                            echo \$NEXUS_PASS | docker login -u \$NEXUS_USER --password-stdin ${NEXUS_URL}
-                            docker tag ${DOCKER_IMAGE}:${DOCKER_TAG} ${NEXUS_URL}${DOCKER_IMAGE}:${DOCKER_TAG}
-                            docker push ${NEXUS_URL}${DOCKER_IMAGE}:${DOCKER_TAG}
+                            echo \$NEXUS_PASS | docker login -u \$NEXUS_USER --password-stdin http://52.66.199.22:8085
+                            docker tag ${DOCKER_IMAGE}:${DOCKER_TAG} http://52.66.199.22:8085/repository/docker-release/${DOCKER_IMAGE}:${DOCKER_TAG}
+                            docker push http://52.66.199.22:8085/repository/docker-release/${DOCKER_IMAGE}:${DOCKER_TAG}
                         '''
                     }
                 }
